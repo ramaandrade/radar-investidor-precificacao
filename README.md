@@ -1,5 +1,7 @@
 # 📡 Passo 6 — Radar do Investidor: Precificação de Ativos e Teorias de Mercado
 
+> 🌐 **Acesso Online (GitHub Pages):** [https://ramaandrade.github.io/radar-investidor-precificacao/](https://ramaandrade.github.io/radar-investidor-precificacao/)  
+> 📦 **Repositório GitHub:** [https://github.com/ramaandrade/radar-investidor-precificacao](https://github.com/ramaandrade/radar-investidor-precificacao)  
 > 📱 **Formato:** Fast Page Mobile (*Single-Page Scroller*) Mobile-First  
 > 🎓 **Contexto Acadêmico:** Fechamento analítico do módulo de Precificação de Ativos e Teorias de Mercado  
 > 🧭 **Posição na Trilha:** Passo 6 de 6 (Aulão prático e desmistificação antes da Avaliação Final)  
