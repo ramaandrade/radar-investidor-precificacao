@@ -9,11 +9,42 @@
   <meta name="description" content="Passo 6: Radar do Investidor - Precificação de Ativos e Teorias de Mercado. Fast Page mobile conectando modelos acadêmicos (DCF, CAPM) ao chão de fábrica do mercado financeiro.">
   <title>Passo 6 - Radar do Investidor: Precificação de Ativos e Teorias de Mercado</title>
   
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/svg+xml" href="./assets/icon-192.svg">
   <link rel="apple-touch-icon" href="./assets/icon-192.svg">
 
-  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/styles.css?v=20261007c">
+
+  <style>
+    /* Regra estrita de bloqueio contra cache residual do rodapé */
+    .sticky-footer, #sticky-cta-btn, #quiz-modal {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+    }
+  </style>
+
+  <script>
+    // Limpeza forçada de caches legados de Service Worker
+    if ('serviceWorker' in navigator) {
+      caches.keys().then(function(cacheNames) {
+        cacheNames.forEach(function(name) {
+          if (name !== 'radar-precificacao-v2') {
+            caches.delete(name);
+          }
+        });
+      });
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        for (let r of regs) { r.update(); }
+      });
+    }
+  </script>
 </head>
 <body>
 
@@ -628,7 +659,7 @@
   </div>
 
   <!-- Scripts -->
-  <script src="./js/analytics.js"></script>
-  <script src="./js/app.js"></script>
+  <script src="./js/analytics.js?v=20261007c"></script>
+  <script src="./js/app.js?v=20261007c"></script>
 </body>
 </html>

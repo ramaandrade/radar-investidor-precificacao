@@ -1,26 +1,27 @@
 /**
  * Service Worker - Passo 6: Radar do Investidor (Precificação de Ativos)
- * Suporte Offline-First e Cache Local Instantâneo
+ * Versão 2.0 - Estratégia Network-First para conteúdo dinâmico
  */
 
-const CACHE_NAME = 'radar-precificacao-v1';
+const CACHE_NAME = 'radar-precificacao-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './css/styles.css',
-  './js/analytics.js',
-  './js/app.js',
+  './css/styles.css?v=20261007b',
+  './js/analytics.js?v=20261007b',
+  './js/app.js?v=20261007b',
   './manifest.json',
   './assets/icon-192.svg',
   './assets/icon-512.svg'
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Pré-armazenando assets essenciais no cache');
+      console.log('[SW v2] Armazenando versão atualizada');
       return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
@@ -30,7 +31,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((name) => {
           if (name !== CACHE_NAME) {
-            console.log('[SW] Removendo cache obsoleto:', name);
+            console.log('[SW v2] Purgando cache antigo:', name);
             return caches.delete(name);
           }
         })
@@ -40,31 +41,44 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Ignora requisições de outros esquemas ou extensões
   if (!event.request.url.startsWith(self.location.origin)) {
     return;
   }
 
+  // Para navegação HTML: Network-First (busca na rede primeiro para sempre exibir a versão mais recente)
+  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match('./index.html') || caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Para outros assets: Stale-While-Revalidate
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
         }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
         return networkResponse;
-      }).catch(() => {
-        // Fallback em caso de offline
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
-      });
+      }).catch(() => cachedResponse);
+
+      return cachedResponse || fetchPromise;
     })
   );
 });

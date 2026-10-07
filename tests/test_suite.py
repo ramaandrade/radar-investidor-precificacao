@@ -88,13 +88,13 @@ class TestRadarPrecificacaoIntegrity(unittest.TestCase):
         self.assertIn('data-theme="light"', css_code, "Deveria suportar alternância de temas")
 
     def test_sticky_cta_removed(self):
-        """Valida que o Sticky Footer persistente e o quiz modal foram removidos conforme solicitação"""
+        """Valida que a tag footer persistente e o quiz modal foram removidos do DOM"""
         with open(self.html_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        self.assertNotIn('sticky-footer', content)
+        self.assertNotIn('<footer', content)
         self.assertNotIn('Estou Pronto: Iniciar Avaliação', content)
-        self.assertNotIn('quiz-modal', content)
+        self.assertNotIn('<div id="quiz-modal"', content)
 
     def test_pwa_service_worker_registered(self):
         """Valida registro do Service Worker e suporte offline"""

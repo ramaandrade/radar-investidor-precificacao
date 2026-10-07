@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeInspectorBtn = document.getElementById('close-inspector-btn');
   const copyMetricsBtn = document.getElementById('copy-metrics-btn');
 
+  // Garantia ativa contra cache: Remove qualquer elemento legado de footer ou quiz
+  document.querySelectorAll('.sticky-footer, #sticky-cta-btn, #quiz-modal').forEach(el => el.remove());
+
   // Conjunto de cards explorados
   const exploredCards = new Set();
   const totalCards = cards.length;
