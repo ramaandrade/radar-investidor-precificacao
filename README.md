@@ -34,7 +34,6 @@ Projetado sob a filosofia de *fast page* mobile, o aplicativo traduz equações 
   - Máquina de Fluxo de Caixa Descontado (*DCF / FCD*)
   - Linha do Mercado de Títulos (*CAPM / SML*)
   - Escudo da *Margem de Segurança*
-* **Sticky Footer Persistente (CTA):** Botão fixo no rodapé com indicador dinâmico de tópicos explorados: **"Estou Pronto: Iniciar Avaliação"**, que abre o modal do simulado de fixação.
 
 ---
 

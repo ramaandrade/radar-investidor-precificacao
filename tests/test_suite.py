@@ -87,13 +87,14 @@ class TestRadarPrecificacaoIntegrity(unittest.TestCase):
         self.assertIn('grid-template-rows', css_code, "Deveria usar técnica CSS Grid para acordeões fluidos")
         self.assertIn('data-theme="light"', css_code, "Deveria suportar alternância de temas")
 
-    def test_sticky_cta_present(self):
-        """Valida a presença do Sticky Footer persistente"""
+    def test_sticky_cta_removed(self):
+        """Valida que o Sticky Footer persistente e o quiz modal foram removidos conforme solicitação"""
         with open(self.html_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        self.assertIn('sticky-footer', content)
-        self.assertIn('Estou Pronto: Iniciar Avaliação', content)
+        self.assertNotIn('sticky-footer', content)
+        self.assertNotIn('Estou Pronto: Iniciar Avaliação', content)
+        self.assertNotIn('quiz-modal', content)
 
     def test_pwa_service_worker_registered(self):
         """Valida registro do Service Worker e suporte offline"""

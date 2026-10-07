@@ -9,16 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleAllBtn = document.getElementById('toggle-all-btn');
   const progressFill = document.getElementById('reading-progress-fill');
   const progressText = document.getElementById('reading-progress-text');
-  const ctaProgressBadge = document.getElementById('cta-progress-badge');
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
-  const stickyCtaBtn = document.getElementById('sticky-cta-btn');
 
   // Modais
-  const quizModal = document.getElementById('quiz-modal');
   const inspectorModal = document.getElementById('inspector-modal');
   const openInspectorBtn = document.getElementById('open-inspector-btn');
   const closeInspectorBtn = document.getElementById('close-inspector-btn');
-  const closeQuizBtn = document.getElementById('close-quiz-btn');
   const copyMetricsBtn = document.getElementById('copy-metrics-btn');
 
   // Conjunto de cards explorados
@@ -75,15 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         progressText.classList.add('completed');
       } else {
         progressText.classList.remove('completed');
-      }
-    }
-
-    if (ctaProgressBadge) {
-      if (count === totalCards) {
-        ctaProgressBadge.textContent = '100% Pronto';
-        ctaProgressBadge.style.background = 'rgba(16, 185, 129, 0.4)';
-      } else {
-        ctaProgressBadge.textContent = `${count}/${totalCards} tópicos`;
       }
     }
   };
@@ -303,111 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /**
    * =========================================================================
-   * STICKY FOOTER CTA & MODAL DE AVALIAÇÃO DE FIXAÇÃO
-   * =========================================================================
-   */
-  if (stickyCtaBtn && quizModal) {
-    stickyCtaBtn.addEventListener('click', () => {
-      triggerHaptic(18);
-      quizModal.classList.add('active');
-      window.radarAnalytics?.trackStickyCtaClick();
-    });
-  }
-
-  if (closeQuizBtn && quizModal) {
-    closeQuizBtn.addEventListener('click', () => {
-      quizModal.classList.remove('active');
-    });
-  }
-
-  // Lógica das Questões do Simulado
-  const quizQuestions = [
-    {
-      id: 'q1',
-      correctIndex: 1, // B
-      feedbackOk: 'Perfeito! Preço é o que você paga (o valor de tela), Valor é o que você leva (os fluxos futuros). Se Preço < Valor, há margem de segurança.',
-      feedbackErr: 'Incorreto. Conforme ensina Warren Buffett: "Preço é o que você paga, Valor é o que você leva". Compramos quando o preço de tela está abaixo do valor intrínseco.'
-    },
-    {
-      id: 'q2',
-      correctIndex: 2, // C
-      feedbackOk: 'Exato! O CAPM estipula que o retorno esperado deve cobrir a taxa livre de risco mais o prêmio de risco ponderado pelo Beta da empresa.',
-      feedbackErr: 'Não exatamente. No modelo CAPM, não há almoço grátis: maior risco sistemático (Beta) exige maior retorno acima da Taxa Livre de Risco.'
-    },
-    {
-      id: 'q3',
-      correctIndex: 0, // A
-      feedbackOk: 'Excelente! A Margem de Segurança funciona como um amortecedor contra estimativas otimistas, erros de cálculo e crises inesperadas no fluxo de caixa.',
-      feedbackErr: 'Atenção: A margem de segurança existe justamente porque o futuro é incerto. Se a planilha diz R$ 50, compra-se por R$ 35 para ter um colchão protetor.'
-    }
-  ];
-
-  let userAnswers = {};
-
-  document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      triggerHaptic(12);
-      const qCard = btn.closest('.quiz-question-card');
-      const qId = qCard.getAttribute('data-q-id');
-      const optIdx = parseInt(btn.getAttribute('data-opt-index'), 10);
-      const qMeta = quizQuestions.find(q => q.id === qId);
-
-      if (!qMeta) return;
-
-      // Desabilita outros botões da mesma questão
-      qCard.querySelectorAll('.quiz-opt-btn').forEach(b => {
-        b.disabled = true;
-        b.style.pointerEvents = 'none';
-      });
-
-      const feedbackEl = qCard.querySelector('.quiz-feedback');
-      const isCorrect = optIdx === qMeta.correctIndex;
-
-      userAnswers[qId] = {
-        selected: optIdx,
-        isCorrect
-      };
-
-      if (isCorrect) {
-        btn.classList.add('correct');
-        if (feedbackEl) {
-          feedbackEl.textContent = `✅ ${qMeta.feedbackOk}`;
-          feedbackEl.className = 'quiz-feedback active correct';
-        }
-      } else {
-        btn.classList.add('wrong');
-        // Marca também a correta
-        const correctBtn = qCard.querySelector(`.quiz-opt-btn[data-opt-index="${qMeta.correctIndex}"]`);
-        if (correctBtn) correctBtn.classList.add('correct');
-
-        if (feedbackEl) {
-          feedbackEl.textContent = `❌ ${qMeta.feedbackErr}`;
-          feedbackEl.className = 'quiz-feedback active wrong';
-        }
-      }
-
-      // Se todas as 3 foram respondidas
-      if (Object.keys(userAnswers).length === quizQuestions.length) {
-        const correctCount = Object.values(userAnswers).filter(a => a.isCorrect).length;
-        window.radarAnalytics?.trackQuizCompleted(correctCount, quizQuestions.length, userAnswers);
-
-        const summaryEl = document.getElementById('quiz-result-summary');
-        if (summaryEl) {
-          summaryEl.style.display = 'block';
-          summaryEl.innerHTML = `
-            <div style="text-align:center; padding:14px; background:var(--bg-app); border-radius:12px; border:1px solid var(--accent-green); margin-top:12px;">
-              <h3 style="color:var(--accent-green); font-size:1.1rem; margin-bottom:4px;">🎉 Avaliação Final Concluída!</h3>
-              <p style="font-size:0.9rem; color:var(--text-secondary);">Você acertou <strong>${correctCount} de ${quizQuestions.length}</strong> questões.</p>
-              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Mentalidade calibrada para o chão de fábrica do mercado financeiro!</p>
-            </div>
-          `;
-        }
-      }
-    });
-  });
-
-  /**
-   * =========================================================================
    * PAINEL INSPETOR DO DOCENTE (TELEMETRIA EM TEMPO REAL)
    * =========================================================================
    */
@@ -442,16 +324,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Fechar modais ao clicar no overlay externo
-  [quizModal, inspectorModal].forEach(modal => {
-    if (modal) {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.classList.remove('active');
-        }
-      });
-    }
-  });
+  // Fechar modal do inspetor ao clicar no overlay externo
+  if (inspectorModal) {
+    inspectorModal.addEventListener('click', (e) => {
+      if (e.target === inspectorModal) {
+        inspectorModal.classList.remove('active');
+      }
+    });
+  }
 
   // Inicializa tema
   initTheme();

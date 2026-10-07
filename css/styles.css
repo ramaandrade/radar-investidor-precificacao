@@ -103,8 +103,7 @@ body {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
-  padding-bottom: 96px; /* Espaço para o Sticky Footer */
+  padding-bottom: 32px;
 }
 
 /* Wrapper Mobile Centralizado */
@@ -803,65 +802,7 @@ body {
 }
 
 /* ==========================================================================
-   Sticky Footer (CTA Persistente)
-   ========================================================================== */
-.sticky-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 12px 16px;
-  background: rgba(8, 13, 26, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-top: 1px solid rgba(148, 163, 184, 0.15);
-  display: flex;
-  justify-content: center;
-  z-index: 50;
-}
-
-[data-theme="light"] .sticky-footer {
-  background: rgba(241, 245, 249, 0.9);
-}
-
-.sticky-footer-inner {
-  width: 100%;
-  max-width: var(--max-content-width);
-}
-
-.sticky-cta-btn {
-  width: 100%;
-  min-height: var(--touch-target);
-  border-radius: var(--radius-md);
-  border: none;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.sticky-cta-btn:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-}
-
-.cta-status-badge {
-  background: rgba(255, 255, 255, 0.22);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: 0.72rem;
-  font-weight: 600;
-}
-
-/* ==========================================================================
-   Modais (Avaliação de Fixação & Inspetor do Docente)
+   Modais (Inspetor do Docente)
    ========================================================================== */
 .modal-overlay {
   position: fixed;
