@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080d1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Passo 6: Radar do Investidor - Precificação de Ativos e Teorias de Mercado. Fast Page mobile conectando modelos acadêmicos (DCF, CAPM) ao chão de fábrica do mercado financeiro.">
+  <title>Passo 6 - Radar do Investidor: Precificação de Ativos e Teorias de Mercado</title>
+  
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon-192.svg">
+  <link rel="apple-touch-icon" href="./assets/icon-192.svg">
+
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+
+  <!-- Toast Notificação do Aha Moment (Damodaran) -->
+  <div id="aha-toast" class="toast-notice" role="alert" aria-live="assertive">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5">
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+    </svg>
+    <span><strong>Aha Moment!</strong> Base de Valuation de Damodaran (NYU) desbloqueada.</span>
+  </div>
+
+  <main class="mobile-app-wrapper" role="main">
+    
+    <!-- Barra Superior de Status & Telemetria -->
+    <header class="app-topbar">
+      <div id="offline-status-pill" class="offline-pill is-online" role="status" aria-live="polite">
+        <span class="status-dot"></span>
+        <span class="status-text">Terminal Conectado</span>
+      </div>
+
+      <div class="topbar-actions">
+        <!-- Chaveador Dark/Light Terminal -->
+        <button id="theme-toggle-btn" class="theme-toggle-btn" type="button" title="Alternar Modo Terminal / Modo Claro" aria-label="Alternar Tema">
+          <svg class="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          Tema
+        </button>
+
+        <!-- Botão do Inspetor de Métricas -->
+        <button id="open-inspector-btn" class="telemetry-btn" type="button" title="Telemetria Docente" aria-label="Ver Métricas da Aula">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20v-6M6 20V10M18 20V4"/>
+          </svg>
+          <span id="telemetry-scroll-badge">0%</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Bloco Hero / Cabeçalho de Contexto -->
+    <section class="app-hero">
+      <div class="hero-badge-row">
+        <span class="step-indicator">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          Passo 6 de 6 • Fechamento Analítico
+        </span>
+        <span class="terminal-mode-badge">TERMINAL FEED</span>
+      </div>
+
+      <h1 class="hero-title">
+        Radar do Investidor:<br>
+        <span class="gradient-text">Precificação & Teorias</span>
+      </h1>
+      <p class="hero-description">
+        O elo definitivo entre a teoria acadêmica (CAPM, WACC, FCD) e o chão de fábrica do mercado. Decodifique o caos antes da avaliação final.
+      </p>
+
+      <!-- Barra de Progresso de Leitura -->
+      <div class="progress-container" aria-label="Progresso da Leitura">
+        <div class="progress-header">
+          <span class="progress-label">Status de Revisão</span>
+          <span id="reading-progress-text" class="progress-value">1/3 explorados</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+          <div id="reading-progress-fill" class="progress-fill" style="width: 33.3%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controles Rápidos -->
+    <section class="quick-controls" aria-label="Controles de Exibição">
+      <span class="section-hint">Decodificação Rápida</span>
+      <button id="toggle-all-btn" class="toggle-all-button" type="button">Expandir todos</button>
+    </section>
+
+    <!-- ====================================================================
+         CARDS MODULARES (ACORDEÕES COM ZERO-DELAY < 100MS)
+         ==================================================================== -->
+    <div class="cards-container">
+
+      <!-- CARD A: O Mindset - Racionalidade vs. Caos (Teorias de Mercado) -->
+      <article class="modular-card is-open" data-card-id="card-a" id="secao-mindset">
+        <button class="card-header" type="button" aria-expanded="true" aria-controls="content-card-a">
+          <div class="card-icon-wrapper color-a" aria-hidden="true">
+            <!-- SVG Ícone Card A: Balança de Racionalidade vs Caos -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3v18M3 9l9-3 9 3M6 15l-3-6h6l-3 6zM18 15l-3-6h6l-3 6z"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <span class="card-badge">Card A • Teorias de Mercado</span>
+            <h2 class="card-title">O Mindset: Racionalidade vs. Caos</h2>
+          </div>
+          <div class="card-chevron" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+        </button>
+
+        <div class="card-content-wrapper" id="content-card-a">
+          <div class="card-content-inner">
+            <div class="card-content-body">
+              <p class="content-lead">
+                Desmistificando os manuais: no mundo real, o mercado não é um laboratório frio, mas uma arena psicológica entre modelos matemáticos e emoções humanas.
+              </p>
+
+              <!-- Tópico 1: Preço vs. Valor -->
+              <div class="topic-block">
+                <div class="topic-header-flex">
+                  <div class="topic-svg-badge" aria-hidden="true">
+                    <!-- SVG Ilustrativo: Balança Preço vs Valor -->
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2">
+                      <line x1="12" y1="3" x2="12" y2="21"/>
+                      <line x1="4" y1="7" x2="20" y2="11"/>
+                      <path d="M4 7l-2 5h4l-2-5z" fill="rgba(245, 158, 11, 0.2)"/>
+                      <path d="M20 11l-2 5h4l-2-5z" fill="rgba(16, 185, 129, 0.4)"/>
+                      <circle cx="12" cy="7" r="1.5" fill="var(--accent-amber)"/>
+                    </svg>
+                  </div>
+                  <div class="topic-title-wrapper">
+                    <span class="topic-tag">A Lição Nº 1 de Buffett</span>
+                    <h3 class="topic-title">Preço vs. Valor</h3>
+                  </div>
+                </div>
+
+                <div class="topic-body">
+                  <p>
+                    <strong>"Preço é o que você paga, Valor é o que você leva."</strong> A precificação busca estimar o <em>Valor Intrínseco</em> através dos fundamentos da empresa; já o mercado dita o <em>Preço na Tela</em> a cada segundo.
+                  </p>
+                  
+                  <div class="highlight-box">
+                    <strong>Regra de Ouro:</strong> Se o <strong>Preço &lt; Valor</strong>, você compra com desconto. Se o Preço &gt; Valor, você evita ou realiza lucro.
+                  </div>
+
+                  <!-- Micro-Widget Tátil: Testador de Preço vs Valor -->
+                  <div class="micro-widget">
+                    <div class="widget-label">
+                      <span>Simulador Preço de Mercado:</span>
+                      <strong id="price-display" style="color:var(--accent-amber);">R$ 35,00</strong>
+                    </div>
+                    <input type="range" id="price-slider" class="widget-range-input" min="20" max="75" step="1" value="35" aria-label="Ajustar Preço de Mercado">
+                    <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted);">
+                      <span>R$ 20 (Super Barato)</span>
+                      <span>Valor Justo: R$ 50,00</span>
+                      <span>R$ 75 (Muito Caro)</span>
+                    </div>
+
+                    <div class="widget-result-pill">
+                      <span>Margem de Segurança: <strong id="margin-display" style="color:var(--accent-green);">30.0%</strong></span>
+                      <span id="decision-badge" class="result-badge buy">COMPRA FORTE</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tópico 2: A Ilusão da Eficiência (HME) -->
+              <div class="topic-block">
+                <div class="topic-header-flex">
+                  <div class="topic-svg-badge" aria-hidden="true">
+                    <!-- SVG Ilustrativo: Onda de Histeria / Ciclo de Mercado -->
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2">
+                      <path d="M2 18 C6 18, 8 6, 12 6 C16 6, 18 20, 22 10" stroke-linecap="round"/>
+                      <line x1="2" y1="12" x2="22" y2="12" stroke="var(--text-muted)" stroke-dasharray="2 2" stroke-width="1.5"/>
+                    </svg>
+                  </div>
+                  <div class="topic-title-wrapper">
+                    <span class="topic-tag cyan">Eugene Fama vs. Mercado Real</span>
+                    <h3 class="topic-title">A Ilusão da Eficiência (HME)</h3>
+                  </div>
+                </div>
+
+                <div class="topic-body">
+                  <p>
+                    A <strong>Hipótese dos Mercados Eficientes (HME)</strong> sustenta que o mercado sabe tudo e que as cotações refletem instantaneamente todas as informações disponíveis.
+                  </p>
+                  <p>
+                    Na teoria acadêmica é impecável; na prática, <strong>crises, bolhas e euforias</strong> provam que o mercado tem momentos periódicos de histeria coletiva. É exatamente na divergência entre o pânico momentâneo e a realidade dos lucros que o investidor disciplinado constrói riqueza.
+                  </p>
+                  
+                  <div class="highlight-box cyan">
+                    💡 <strong>Insight:</strong> Se o mercado fosse 100% eficiente o tempo todo, Warren Buffett, Peter Lynch e os grandes fundos seriam meras anomalias estatísticas.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tópico 3: Finanças Comportamentais na Veia -->
+              <div class="topic-block">
+                <div class="topic-header-flex">
+                  <div class="topic-svg-badge" aria-hidden="true">
+                    <!-- SVG Ilustrativo: Cérebro / Psicologia -->
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2">
+                      <path d="M9.5 2A4.5 4.5 0 0 0 5 6.5c0 1.25.5 2.37 1.32 3.19A4.5 4.5 0 0 0 5 13.5 4.5 4.5 0 0 0 9.5 18h1V2h-1z"/>
+                      <path d="M14.5 2A4.5 4.5 0 0 1 19 6.5c0 1.25-.5 2.37-1.32 3.19A4.5 4.5 0 0 1 19 13.5 4.5 4.5 0 0 1 14.5 18h-1V2h1z"/>
+                      <line x1="8" y1="10" x2="16" y2="10" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="topic-title-wrapper">
+                    <span class="topic-tag purple">Kahneman & Tversky</span>
+                    <h3 class="topic-title">Finanças Comportamentais na Veia</h3>
+                  </div>
+                </div>
+
+                <div class="topic-body">
+                  <p>
+                    <strong>Cuidado com o seu próprio cérebro.</strong> A teoria prospectiva comprovou que a <strong>dor de perder R$ 1.000 é duas a duas vezes e meia mais intensa</strong> do que a alegria de ganhar os mesmos R$ 1.000 (Aversão à Perda).
+                  </p>
+                  <p>
+                    Reconheça seus vieses de confirmação, não compre no topo por medo de ficar de fora (FOMO) e nunca siga cegamente o "efeito manada" nas redes sociais.
+                  </p>
+
+                  <!-- Widget Sensorial: Teste da Aversão à Perda -->
+                  <div class="micro-widget">
+                    <div class="widget-label">
+                      <span>Simule o Impacto Emocional:</span>
+                      <span style="font-size:0.75rem; color:var(--text-muted);">Toque para sentir a assimetria</span>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:6px;">
+                      <button id="loss-btn-gain" type="button" class="quiz-opt-btn" style="justify-content:center; text-align:center; font-weight:700; color:var(--accent-green); border-color:rgba(16,185,129,0.3);">
+                        + R$ 1.000 Ganho
+                      </button>
+                      <button id="loss-btn-loss" type="button" class="quiz-opt-btn" style="justify-content:center; text-align:center; font-weight:700; color:var(--accent-red); border-color:rgba(239,68,68,0.3);">
+                        - R$ 1.000 Perda
+                      </button>
+                    </div>
+
+                    <div class="loss-aversion-container">
+                      <div class="loss-card gain">
+                        <span style="font-size:0.7rem; color:var(--text-muted);">Prazer do Ganho</span>
+                        <div class="loss-card-val green">+1.0x</div>
+                        <div class="psych-scale"><div class="psych-bar-gain"></div></div>
+                      </div>
+                      <div class="loss-card loss">
+                        <span style="font-size:0.7rem; color:var(--text-muted);">Dor da Perda</span>
+                        <div class="loss-card-val red">-2.5x</div>
+                        <div class="psych-scale"><div class="psych-bar-loss"></div></div>
+                      </div>
+                    </div>
+
+                    <p id="loss-explanation" style="font-size:0.78rem; color:var(--text-muted); margin-top:8px; line-height:1.4;">
+                      Toque nos botões acima para ver como o cérebro processa o valor monetário de forma desproporcional.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD B: A Máquina de Precificação (O Motor do Valuation) -->
+      <article class="modular-card" data-card-id="card-b" id="secao-valuation">
+        <button class="card-header" type="button" aria-expanded="false" aria-controls="content-card-b">
+          <div class="card-icon-wrapper color-b" aria-hidden="true">
+            <!-- SVG Ícone Card B: Engrenagem de Valuation / Fluxo de Caixa -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <span class="card-badge">Card B • O Motor do Valuation</span>
+            <h2 class="card-title">A Máquina de Precificação</h2>
+          </div>
+          <div class="card-chevron" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+        </button>
+
+        <div class="card-content-wrapper" id="content-card-b">
+          <div class="card-content-inner">
+            <div class="card-content-body">
+              <p class="content-lead">
+                O motor que move os fundos de investimento: como as premissas matemáticas são convertidas em valor patrimonial tangível.
+              </p>
+
+              <!-- Tópico 1: Fluxo de Caixa Descontado (FCD / DCF) -->
+              <div class="topic-block">
+                <div class="topic-header-flex">
+                  <div class="topic-svg-badge" aria-hidden="true">
+                    <!-- SVG Ilustrativo: Desconto Temporal / Cash Flow -->
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="2">
+                      <rect x="2" y="5" width="20" height="14" rx="3"/>
+                      <line x1="2" y1="10" x2="22" y2="10"/>
+                      <circle cx="7" cy="15" r="1.5" fill="var(--accent-green)"/>
+                      <path d="M12 15h5"/>
+                    </svg>
+                  </div>
+                  <div class="topic-title-wrapper">
+                    <span class="topic-tag green">O Coração da Precificação</span>
+                    <h3 class="topic-title">Fluxo de Caixa Descontado (FCD / DCF)</h3>
+                  </div>
+                </div>
+
+                <div class="topic-body">
+                  <p>
+                    Uma ação não é um bilhete de loteria; é uma <strong>fração de uma empresa real</strong>. O valor dessa empresa hoje é a soma de todo o dinheiro líquido que ela é capaz de gerar no futuro, trazido a valor presente descontado pelo custo de capital (WACC).
+                  </p>
+                  
+                  <div class="highlight-box green">
+                    👑 <strong>"Cash is King" (O Caixa é Rei):</strong> Lucro contábil é uma opinião dos contadores; fluxo de caixa livre é um fato que paga contas e distribui dividendos.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tópico 2: Risco e Retorno (O famoso CAPM) -->
+              <div class="topic-block">
+                <div class="topic-header-flex">
+                  <div class="topic-svg-badge" aria-hidden="true">
+                    <!-- SVG Ilustrativo: Linha CAPM / Risco vs Retorno -->
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2">
+                      <line x1="3" y1="20" x2="21" y2="20"/>
+                      <line x1="3" y1="20" x2="3" y2="4"/>
+                      <line x1="3" y1="14" x2="20" y2="6" stroke-width="2.5"/>
+                      <circle cx="12" cy="10" r="2.5" fill="var(--accent-blue)"/>
+                    </svg>
+                  </div>
+                  <div class="topic-title-wrapper">
+                    <span class="topic-tag blue">Não Há Almoço Grátis</span>
+                    <h3 class="topic-title">Risco e Retorno (O Famoso CAPM)</h3>
+                  </div>
+                </div>
+
+                <div class="topic-body">
+                  <p>
+                    O modelo <strong>CAPM (Capital Asset Pricing Model)</strong> ensina que você só deve aceitar o risco da Renda Variável se o retorno esperado for estritamente superior à Taxa Livre de Risco (Tesouro Selic) acrescido de um Prêmio de Risco justo, calibrado pela sensibilidade do ativo ao mercado (Beta &beta;):
+                  </p>
+                  
+                  <div style="text-align:center; padding:8px; background:var(--bg-app); border-radius:8px; font-family:ui-monospace, monospace; font-size:0.9rem; color:var(--accent-cyan); margin:8px 0; border:1px solid var(--border-subtle);">
+                    E(R) = R<sub>f</sub> + &beta; &times; [E(R<sub>m</sub>) - R<sub>f</sub>]
+                  </div>
+
+                  <!-- Simulador CAPM Express -->
+                  <div class="micro-widget">
+                    <div class="widget-label">
+                      <span>Calculadora CAPM Express:</span>
+                      <strong id="capm-result" style="color:var(--accent-cyan); font-size:1rem;">17.35% a.a.</strong>
+                    </div>
+
+                    <div style="margin-top:8px;">
+                      <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+                        <span>Taxa Livre de Risco (Selic R<sub>f</sub>):</span>
+                        <strong id="selic-display" style="color:var(--text-main);">10.75%</strong>
+                      </div>
+                      <input type="range" id="selic-slider" class="widget-range-input" min="7" max="15" step="0.25" value="10.75" aria-label="Ajustar Selic">
+                    </div>
+
+                    <div style="margin-top:6px;">
+                      <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+                        <span>Beta da Empresa (&beta; sistemático):</span>
+                        <strong id="beta-display" style="color:var(--text-main);">1.20x</strong>
+                      </div>
+                      <input type="range" id="beta-slider" class="widget-range-input" min="0.5" max="2.0" step="0.05" value="1.20" aria-label="Ajustar Beta">
+                    </div>
+
+                    <div style="margin-top:6px;">
+                      <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+                        <span>Prêmio de Risco do Mercado (ERP):</span>
+                        <strong id="erp-display" style="color:var(--text-main);">5.50%</strong>
+                      </div>
+                      <input type="range" id="erp-slider" class="widget-range-input" min="3.0" max="8.0" step="0.25" value="5.50" aria-label="Ajustar ERP">
+                    </div>
+
+                    <p id="capm-insight" style="font-size:0.78rem; color:var(--text-secondary); margin-top:8px; line-height:1.4;">
+                      Para comprar esta ação com Beta 1.20x, o analista exige no mínimo 17.35% a.a. para compensar a volatilidade.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tópico 3: Margem de Segurança -->
+              <div class="topic-block">
+                <div class="topic-header-flex">
+                  <div class="topic-svg-badge" aria-hidden="true">
+                    <!-- SVG Ilustrativo: Escudo Protetor / Margem de Segurança -->
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      <path d="M9 12l2 2 4-4" stroke-width="2.5"/>
+                    </svg>
+                  </div>
+                  <div class="topic-title-wrapper">
+                    <span class="topic-tag">Benjamin Graham & Buffett</span>
+                    <h3 class="topic-title">Margem de Segurança</h3>
+                  </div>
+                </div>
+
+                <div class="topic-body">
+                  <p>
+                    <strong>Nunca confie cegamente na sua planilha de precificação.</strong> O futuro é inerentemente incerto. Se a sua fórmula matemática calculou que a ação vale R$ 50,00, não pague R$ 49,00.
+                  </p>
+                  <p>
+                    Espere o mercado entrar em histeria e compre por <strong>R$ 35,00</strong>. Essa diferença de 30% é a sua <strong>Margem de Segurança</strong>: o colchão protetor que absorve imprevistos macroeconômicos, quebras de cadeia de suprimentos ou erros de projeção.
+                  </p>
+                  
+                  <div class="highlight-box">
+                    🛡️ <strong>Princípio Vital:</strong> A margem de segurança não serve para maximizar o ganho, mas para garantir que um erro de premissa não destrua o seu patrimônio.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD C: Toolkit da Internet (Onde os "Quants" e Analistas vivem) -->
+      <article class="modular-card" data-card-id="card-c" id="secao-toolkit">
+        <button class="card-header" type="button" aria-expanded="false" aria-controls="content-card-c">
+          <div class="card-icon-wrapper color-c" aria-hidden="true">
+            <!-- SVG Ícone Card C: Maleta de Ferramentas / Terminal -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <span class="card-badge">Card C • Recursos Práticos</span>
+            <h2 class="card-title">Toolkit da Internet (Quants & Analistas)</h2>
+          </div>
+          <div class="card-chevron" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+        </button>
+
+        <div class="card-content-wrapper" id="content-card-c">
+          <div class="card-content-inner">
+            <div class="card-content-body">
+              <p class="content-lead">
+                Onde os profissionais buscam os dados brutos e realizam análises no dia a dia. Toque nos botões para acessar as fontes oficiais:
+              </p>
+
+              <div class="toolkit-grid">
+                
+                <!-- 1. DAMODARAN (O Santo Graal - Dispara o AHA MOMENT!) -->
+                <a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener noreferrer" class="toolkit-item holy-grail" data-tool-key="damodaran" data-category="valuation_bible">
+                  <span class="holy-grail-ribbon">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    O Santo Graal
+                  </span>
+                  <div class="toolkit-icon-box" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                      <line x1="9" y1="7" x2="15" y2="7"/>
+                      <line x1="9" y1="11" x2="13" y2="11"/>
+                    </svg>
+                  </div>
+                  <div class="toolkit-info">
+                    <div class="toolkit-name">
+                      Aswath Damodaran (NYU Stern)
+                    </div>
+                    <div class="toolkit-desc">
+                      A bíblia global de Valuation. Bases abertas de Prêmios de Risco (ERP), Betas setoriais e WACC atualizados anualmente pelo professor.
+                    </div>
+                  </div>
+                  <div class="toolkit-arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+                </a>
+
+                <!-- 2. TRADINGVIEW -->
+                <a href="https://www.tradingview.com/" target="_blank" rel="noopener noreferrer" class="toolkit-item" data-tool-key="tradingview" data-category="technical_analysis">
+                  <div class="toolkit-icon-box amber" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                      <polyline points="16 7 22 7 22 13"/>
+                    </svg>
+                  </div>
+                  <div class="toolkit-info">
+                    <div class="toolkit-name">
+                      TradingView
+                    </div>
+                    <div class="toolkit-desc">
+                      Principal ecossistema gráfico mundial. Essencial para decifrar a ótica técnica e como a massa movimenta o fluxo e os preços no curto prazo.
+                    </div>
+                  </div>
+                  <div class="toolkit-arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+                </a>
+
+                <!-- 3. PORTAL DADOS ABERTOS CVM / SEC EDGAR -->
+                <a href="https://dados.cvm.gov.br/" target="_blank" rel="noopener noreferrer" class="toolkit-item" data-tool-key="cvm_sec" data-category="regulatory_data">
+                  <div class="toolkit-icon-box blue" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="2" y="3" width="20" height="14" rx="2"/>
+                      <line x1="8" y1="21" x2="16" y2="21"/>
+                      <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                  </div>
+                  <div class="toolkit-info">
+                    <div class="toolkit-name">
+                      Portal CVM / SEC EDGAR
+                    </div>
+                    <div class="toolkit-desc">
+                      Onde os analistas raiz operam: demonstrações originais auditadas (DRE, DFC, Balanços) direto da fonte reguladora, sem ruído jornalístico.
+                    </div>
+                  </div>
+                  <div class="toolkit-arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+                </a>
+
+                <!-- 4. STATUS INVEST (MÚLTIPLOS HISTÓRICOS) -->
+                <a href="https://statusinvest.com.br/" target="_blank" rel="noopener noreferrer" class="toolkit-item" data-tool-key="statusinvest" data-category="multiples_valuation">
+                  <div class="toolkit-icon-box green" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="20" x2="18" y2="10"/>
+                      <line x1="12" y1="20" x2="12" y2="4"/>
+                      <line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                  </div>
+                  <div class="toolkit-info">
+                    <div class="toolkit-name">
+                      Status Invest (Múltiplos Históricos)
+                    </div>
+                    <div class="toolkit-desc">
+                      Ferramenta de múltiplos relativos. Compare o P/L e EV/EBITDA atual com a média histórica da empresa para validar se o preço está esticado.
+                    </div>
+                  </div>
+                  <div class="toolkit-arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+                </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /cards-container -->
+
+  </main>
+
+  <!-- ======================================================================
+       STICKY FOOTER (CTA PERSISTENTE)
+       ====================================================================== -->
+  <footer class="sticky-footer" role="contentinfo">
+    <div class="sticky-footer-inner">
+      <button id="sticky-cta-btn" class="sticky-cta-btn" type="button" aria-haspopup="dialog" aria-expanded="false">
+        <span>Estou Pronto: Iniciar Avaliação</span>
+        <span id="cta-progress-badge" class="cta-status-badge">1/3 tópicos</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       MODAL: AVALIAÇÃO FINAL DE FIXAÇÃO
+       ====================================================================== -->
+  <div id="quiz-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="quiz-modal-title">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2 id="quiz-modal-title">Checkpoint de Fixação</h2>
+          <p>Valide sua mentalidade de precificação antes da prova</p>
+        </div>
+        <button id="close-quiz-btn" class="modal-close-btn" type="button" aria-label="Fechar Modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        
+        <!-- Questão 1: Preço vs Valor -->
+        <div class="quiz-question-card" data-q-id="q1">
+          <div class="quiz-q-num">Questão 1 de 3 • Princípio Fundamental</div>
+          <div class="quiz-q-text">
+            Um analista de mercado calcula que o valor justo da ação da Empresa XYZ é R$ 60,00. Na tela da B3, ela está sendo cotada a R$ 38,00. Segundo o ensinamento clássico de Warren Buffett:
+          </div>
+          <div class="quiz-options">
+            <button class="quiz-opt-btn" data-opt-index="0" type="button">
+              <span>A)</span> O preço de tela sempre reflete a realidade perfeita, logo o analista deve descartar seu cálculo.
+            </button>
+            <button class="quiz-opt-btn" data-opt-index="1" type="button">
+              <span>B)</span> Preço é o que você paga (R$ 38) e Valor é o que você leva (R$ 60). Há ampla oportunidade de compra.
+            </button>
+            <button class="quiz-opt-btn" data-opt-index="2" type="button">
+              <span>C)</span> Como o Preço é menor que o Valor, significa que a empresa está falindo obrigatoriamente.
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Questão 2: CAPM -->
+        <div class="quiz-question-card" data-q-id="q2">
+          <div class="quiz-q-num">Questão 2 de 3 • Risco e Retorno</div>
+          <div class="quiz-q-text">
+            Ao aplicar o modelo CAPM para precificar o custo de oportunidade de uma ação com Beta (&beta;) = 1.3 em um cenário com Selic a 10%, qual é o pressuposto correto?
+          </div>
+          <div class="quiz-options">
+            <button class="quiz-opt-btn" data-opt-index="0" type="button">
+              <span>A)</span> O investidor aceita receber um retorno inferior a 10% porque a ação oscila mais que o mercado.
+            </button>
+            <button class="quiz-opt-btn" data-opt-index="1" type="button">
+              <span>B)</span> O modelo CAPM ignora a taxa livre de risco e foca exclusivamente no lucro contábil da empresa.
+            </button>
+            <button class="quiz-opt-btn" data-opt-index="2" type="button">
+              <span>C)</span> O investidor só deve comprar se o retorno projetado superar a Selic (10%) somada ao prêmio de risco ajustado pelo Beta.
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Questão 3: Margem de Segurança -->
+        <div class="quiz-question-card" data-q-id="q3">
+          <div class="quiz-q-num">Questão 3 de 3 • Sobrevivência de Longo Prazo</div>
+          <div class="quiz-q-text">
+            Por que analistas profissionais nunca compram uma ação exatamente pelo valor justo calculado em sua planilha de Fluxo de Caixa Descontado (ex: pagar R$ 49 se ela vale R$ 50)?
+          </div>
+          <div class="quiz-options">
+            <button class="quiz-opt-btn" data-opt-index="0" type="button">
+              <span>A)</span> Porque exigem uma Margem de Segurança como colchão protetor contra erros de estimativa e crises imprevistas.
+            </button>
+            <button class="quiz-opt-btn" data-opt-index="1" type="button">
+              <span>B)</span> Porque a regulação da CVM proíbe compras com margens menores que 15%.
+            </button>
+            <button class="quiz-opt-btn" data-opt-index="2" type="button">
+              <span>C)</span> Porque os modelos matemáticos de valuation são exatos e livres de quaisquer incertezas futuras.
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div id="quiz-result-summary" style="display:none;"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: INSPETOR DE TELEMETRIA DOCENTE
+       ====================================================================== -->
+  <div id="inspector-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="inspector-modal-title">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2 id="inspector-modal-title">Auditoria de Leitura Docente</h2>
+          <p>Painel de engajamento do aluno & telemetria em tempo real</p>
+        </div>
+        <button id="close-inspector-btn" class="modal-close-btn" type="button" aria-label="Fechar Modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        
+        <div class="telemetry-grid">
+          <div class="metric-tile">
+            <span class="metric-title">Tempo Ativo na Aula</span>
+            <div id="inspector-time" class="metric-val">0m 0s</div>
+          </div>
+          <div class="metric-tile">
+            <span class="metric-title">Profundidade de Scroll</span>
+            <div id="inspector-scroll" class="metric-val">0%</div>
+          </div>
+        </div>
+
+        <!-- Card de Status do Aha Moment -->
+        <div class="aha-moment-banner">
+          <div style="font-size:1.5rem;">💡</div>
+          <div>
+            <div style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--accent-cyan);">Status do Aha Moment (Damodaran)</div>
+            <div id="inspector-aha-status" style="font-size:0.88rem; margin-top:2px;">
+              <span style="color:var(--text-muted);">⏳ Pendente (Clique no Damodaran)</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--text-muted);">Eventos Registrados (Últimos 10)</span>
+            <button id="copy-metrics-btn" class="toggle-all-button" type="button">📋 Copiar Relatório JSON</button>
+          </div>
+          <pre id="inspector-events-log" class="telemetry-log-pre">Carregando telemetria...</pre>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./js/analytics.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
